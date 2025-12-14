@@ -235,19 +235,14 @@ public class Controller {
         boolean success = false;
         
         if (c instanceof Assistant) {
-            handleAssistant(p);
             success = handleAssistant(p);
         } else if (c instanceof Archaeologist) {
-            handleArchaeologist(p);
             success = handleArchaeologist(p);
         } else if (c instanceof Digger) {
-            handleDigger(p);
             success = handleDigger(p);
         } else if (c instanceof Professor) {
-            handleProfessor(p);
             success = handleProfessor(p);
         } else if (c instanceof TheCoder) {
-            handleTheCoder(p);
             success = handleTheCoder(p);
         }
 
