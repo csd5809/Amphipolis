@@ -1,0 +1,112 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+package "Model" {
+    abstract class Tile {
+        - int id
+        - String imagePath
+        + Tile(int, String)
+        + getId(): int
+        + getImagePath(): String
+        + {abstract} getColor(): String
+    }
+
+    class LandslideTile extends Tile {
+        + LandslideTile(int, String)
+        + getColor(): String
+    }
+
+    abstract class FindingTile extends Tile {
+        + FindingTile(int, String)
+    }
+
+    class MosaicTile extends FindingTile {
+        - String color
+        + MosaicTile(int, String, String)
+        + getColor(): String
+    }
+
+    class AmphoraTile extends FindingTile {
+        - String color
+        + AmphoraTile(int, String, String)
+        + getColor(): String
+    }
+
+    class SkeletonTile extends FindingTile {
+        - boolean isBig
+        - boolean isUpper
+        + SkeletonTile(int, String, boolean, boolean)
+        + getColor(): String
+    }
+
+    abstract class StatueTile extends FindingTile {
+        + StatueTile(int, String)
+    }
+
+    class SphinxTile extends StatueTile {
+        + getColor(): String
+    }
+
+    class CaryatidTile extends StatueTile {
+        + getColor(): String
+    }
+
+    class Player {
+        - String name
+        - int score
+        - ArrayList<Tile> myTiles
+        + calculateScore(): int
+        + useCharacter(Character)
+    }
+
+    class Board {
+        - ArrayList<Tile> mosaicArea
+        - ArrayList<Tile> statueArea
+        + addTileToArea(Tile)
+    }
+    
+    class Bag {
+        - ArrayList<Tile> contents
+        + drawTiles(int): ArrayList<Tile>
+    }
+
+    abstract class Character {
+        - String name
+        - boolean isUsed
+        + {abstract} ability()
+    }
+    
+    class Assistant extends Character {
+        + ability()
+    }
+    class Archaeologist extends Character {
+        + ability()
+    }
+    class Digger extends Character {
+        + ability()
+    }
+    class Professor extends Character {
+        + ability()
+    }
+    class TheCoder extends Character {
+        + ability()
+    }
+}
+
+package "Controller" {
+    class Controller {
+        + nextTurn()
+    }
+}
+
+package "View" {
+    class GameWindow {
+    }
+}
+
+Controller --> Model.Board
+Controller --> Model.Player
+Controller --> View.GameWindow
+
+@enduml
