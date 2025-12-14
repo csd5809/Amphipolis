@@ -64,9 +64,16 @@ public class Controller {
 
     private void selectFromArea(int areaIndex) {
         Player p = players.get(currentPlayerIndex);
-        
+    
+        // Έλεγχος 1: Πρέπει να έχει τραβήξει από σακούλα πρώτα
         if (!p.hasPlayed()) {
-            JOptionPane.showMessageDialog(view, "You must draw tiles first!");
+            JOptionPane.showMessageDialog(view, "You must draw tiles from the bag first (Step 1)!");
+            return;
+        }
+
+        // Έλεγχος 2: Πρέπει να ΜΗΝ έχει ξαναπάρει από το ταμπλό σε αυτόν τον γύρο
+        if (p.hasPickedFromBoard()) {
+            JOptionPane.showMessageDialog(view, "You have already picked tiles from a sorting area in this turn!");
             return;
         }
         
@@ -89,14 +96,25 @@ public class Controller {
         }
         
         p.addTiles(taken);
-        p.setLastSelectedArea(areaIndex); // Για Archaeologist/Digger
+        p.setLastSelectedArea(areaIndex);
+        p.setHasSelectedFromArea(true); // ΝΕΟ - Μαρκάρει ότι έχει πάρει
         view.updatePlayerInfo(p.getName(), p.getColor(), p.calculateScore());
+        p.setHasPickedFromBoard(true); // Κλείδωσε ότι πήρε από το ταμπλό
+        p.setLastSelectedArea(areaIndex); // Κράτα την περιοχή για τους χαρακτήρες
+        view.updatePlayerInfo(p.getName(), p.getColor(), p.calculateScore());
+        
+        JOptionPane.showMessageDialog(view, "Took " + count + " tiles. You cannot select from areas again this turn!");
     }
 
     private void startTurn() {
         Player p = players.get(currentPlayerIndex);
         p.setHasPlayed(false);
-        
+
+        p.setHasPickedFromBoard(false); // Reset ότι δεν έχει πάρει ακόμα από το ταμπλό
+        p.setLastSelectedArea(-1); // Reset την περιοχή που διάλεξε, ώστε να δουλέψουν σωστά οι χαρακτήρες
+        p.setHasSelectedFromArea(false); // Reset για νέο γύρο
+        p.setLastSelectedArea(-1); // Reset
+
         // Έλεγχος αν είχε παίξει TheCoder προηγούμενα
         if (p.getCoderSelectedArea() != -1) {
             ArrayList<Tile> tiles = getAreaTiles(p.getCoderSelectedArea());
@@ -204,6 +222,11 @@ public class Controller {
     private void useCharacter(int index) {
         Player p = players.get(currentPlayerIndex);
         Model.Character c = p.getMyCharacters().get(index);
+
+        if (!p.hasPlayed()) { // Έλεγχος αν τράβηξε από σακούλα
+            JOptionPane.showMessageDialog(view, "You must draw tiles from the bag first!");
+            return;
+        }
         
         if (c.isUsed()) {
             JOptionPane.showMessageDialog(view, "This character has been used already!");

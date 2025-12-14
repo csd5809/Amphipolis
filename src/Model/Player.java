@@ -14,6 +14,8 @@ public class Player {
     
     private int lastSelectedArea = -1;
     private int coderSelectedArea = -1;
+    private boolean hasSelectedFromArea = false;
+    private boolean hasPickedFromBoard; // Αν έχει πάρει πλακίδια από περιοχή στο βήμα 2
 
     
 
@@ -32,9 +34,11 @@ public class Player {
         this.score = 0;
         this.myTiles = new ArrayList<>();
         this.myCharacters = new ArrayList<>();
+
         
         this.hasPlayed = false;
         this.hasPlayedCoder = false;
+        this.hasPickedFromBoard = false;
 
         // Μοιράζουμε τους 5 χαρακτήρες στον παίκτη
         myCharacters.add(new Assistant());
@@ -177,6 +181,11 @@ public class Player {
 
     public int getCoderSelectedArea() { return coderSelectedArea; }
     public void setCoderSelectedArea(int area) { this.coderSelectedArea = area; }
+
+    public boolean hasSelectedFromArea() { return hasSelectedFromArea; }
+    public void setHasSelectedFromArea(boolean val) { this.hasSelectedFromArea = val; }
+    public boolean hasPickedFromBoard() { return hasPickedFromBoard; }
+    public void setHasPickedFromBoard(boolean hasPickedFromBoard) { this.hasPickedFromBoard = hasPickedFromBoard; }
 
 }
 
