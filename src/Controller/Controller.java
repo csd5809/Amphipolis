@@ -232,23 +232,30 @@ public class Controller {
             JOptionPane.showMessageDialog(view, "This character has been used already!");
             return;
         }
+        boolean success = false;
         
         if (c instanceof Assistant) {
             handleAssistant(p);
+            success = handleAssistant(p);
         } else if (c instanceof Archaeologist) {
             handleArchaeologist(p);
+            success = handleArchaeologist(p);
         } else if (c instanceof Digger) {
             handleDigger(p);
+            success = handleDigger(p);
         } else if (c instanceof Professor) {
             handleProfessor(p);
+            success = handleProfessor(p);
         } else if (c instanceof TheCoder) {
             handleTheCoder(p);
+            success = handleTheCoder(p);
         }
 
-        c.setUsed(true);
-        JOptionPane.showMessageDialog(view, "You used: " + c.getClass().getSimpleName() + "!");
-        
-        view.getCharacterButtons().get(index).setEnabled(false);
+        if (success) {
+            c.setUsed(true);
+            JOptionPane.showMessageDialog(view, "You used: " + c.getClass().getSimpleName() + "!");
+            view.getCharacterButtons().get(index).setEnabled(false);
+        }
     }
 
 
@@ -331,8 +338,7 @@ public class Controller {
         }
     }
     
-    private void handleAssistant(Player p) {
-    // Παίρνει 1 πλακίδιο από οποιαδήποτε περιοχή
+    private boolean handleAssistant(Player p) {
         String[] options = {"Mosaics", "Statues", "Amphorae", "Skeletons"};
         int choice = JOptionPane.showOptionDialog(view, "Choose area:", "Assistant",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -346,42 +352,57 @@ public class Controller {
                 p.addTiles(temp);
                 view.addTileToHand(taken.getImagePath());
                 board.removeTileFromArea(taken);
+                return true; // Πέτυχε
+            } else {
+                 JOptionPane.showMessageDialog(view, "Area is empty!");
+                 return false; // Άδεια περιοχή, δεν έγινε ενέργεια
             }
         }
+        return false; // Ακυρώθηκε
     }
 
-    private void handleArchaeologist(Player p) {
+    private boolean handleArchaeologist(Player p) {
         if (p.getLastSelectedArea() == -1) {
             JOptionPane.showMessageDialog(view, "You must select an area first in step 2!");
-            return;
+            return false;
         }
         
         String[] options = {"Mosaics", "Statues", "Amphorae", "Skeletons"};
         int choice = JOptionPane.showOptionDialog(view, "Choose DIFFERENT area (not " + options[p.getLastSelectedArea()] + "):", 
                 "Archaeologist", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         
-        if (choice >= 0 && choice != p.getLastSelectedArea()) {
-            ArrayList<Tile> tiles = getAreaTiles(choice);
-            int count = Math.min(2, tiles.size());
-            
-            for (int i = 0; i < count; i++) {
-                if (!tiles.isEmpty()) {
-                    Tile taken = tiles.remove(0);
-                    p.addTiles(new ArrayList<>(java.util.Arrays.asList(taken)));
-                    view.addTileToHand(taken.getImagePath());
-                    board.removeTileFromArea(taken);
+        if (choice >= 0) {
+            if (choice != p.getLastSelectedArea()) {
+                ArrayList<Tile> tiles = getAreaTiles(choice);
+                int count = Math.min(2, tiles.size());
+                
+                if (count == 0) {
+                     JOptionPane.showMessageDialog(view, "Area is empty!");
+                     return false;
                 }
+
+                for (int i = 0; i < count; i++) {
+                    if (!tiles.isEmpty()) {
+                        Tile taken = tiles.remove(0);
+                        p.addTiles(new ArrayList<>(java.util.Arrays.asList(taken)));
+                        view.addTileToHand(taken.getImagePath());
+                        board.removeTileFromArea(taken);
+                    }
+                }
+                view.updatePlayerInfo(p.getName(), p.getColor(), p.calculateScore());
+                return true; // Πέτυχε
+            } else {
+                JOptionPane.showMessageDialog(view, "You must choose a DIFFERENT area!");
+                return false; // Απέτυχε (διάλεξε την ίδια)
             }
-            view.updatePlayerInfo(p.getName(), p.getColor(), p.calculateScore());
-        } else if (choice == p.getLastSelectedArea()) {
-            JOptionPane.showMessageDialog(view, "You must choose a DIFFERENT area!");
         }
+        return false; // Ακυρώθηκε
     }
 
-    private void handleDigger(Player p) {
+    private boolean handleDigger(Player p) {
         if (p.getLastSelectedArea() == -1) {
             JOptionPane.showMessageDialog(view, "You must select an area first in step 2!");
-            return;
+            return false;
         }
         
         ArrayList<Tile> tiles = getAreaTiles(p.getLastSelectedArea());
@@ -389,7 +410,7 @@ public class Controller {
         
         if (count == 0) {
             JOptionPane.showMessageDialog(view, "No more tiles in that area!");
-            return;
+            return false; // Απέτυχε
         }
         
         for (int i = 0; i < count; i++) {
@@ -400,12 +421,13 @@ public class Controller {
         }
         view.updatePlayerInfo(p.getName(), p.getColor(), p.calculateScore());
         JOptionPane.showMessageDialog(view, "Took " + count + " more tiles from same area!");
+        return true; // Πέτυχε
     }
 
-    private void handleProfessor(Player p) {
+    private boolean handleProfessor(Player p) {
         if (p.getLastSelectedArea() == -1) {
             JOptionPane.showMessageDialog(view, "You must select an area first in step 2!");
-            return;
+            return false;
         }
         
         int taken = 0;
@@ -423,9 +445,10 @@ public class Controller {
         }
         view.updatePlayerInfo(p.getName(), p.getColor(), p.calculateScore());
         JOptionPane.showMessageDialog(view, "Took 1 tile from " + taken + " other areas!");
+        return true; // Πέτυχε (ακόμα και αν πήρε 0, η ενέργεια θεωρείται ότι έγινε)
     }
 
-    private void handleTheCoder(Player p) {
+    private boolean handleTheCoder(Player p) {
         String[] options = {"Mosaics", "Statues", "Amphorae", "Skeletons"};
         int choice = JOptionPane.showOptionDialog(view, "Choose area for next turn:", "The Coder",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -433,7 +456,9 @@ public class Controller {
         if (choice >= 0) {
             p.setCoderSelectedArea(choice);
             JOptionPane.showMessageDialog(view, "Next turn you'll get 2 tiles from " + options[choice] + "!");
+            return true;
         }
+        return false;
     }
 
     private ArrayList<Tile> getAreaTiles(int areaIndex) {
