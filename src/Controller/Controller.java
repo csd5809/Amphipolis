@@ -54,6 +54,10 @@ public class Controller {
         view.getStatueAreaButton().addActionListener(e -> selectFromArea(1));
         view.getAmphoraAreaButton().addActionListener(e -> selectFromArea(2));
         view.getSkeletonAreaButton().addActionListener(e -> selectFromArea(3));
+
+        //gia save/load
+        view.getSaveItem().addActionListener(e -> saveGame());
+        view.getLoadItem().addActionListener(e -> loadGame());
         
         ArrayList<JButton> charBtns = view.getCharacterButtons();
         for (int i = 0; i < charBtns.size(); i++) {
@@ -464,6 +468,84 @@ public class Controller {
             case 3: return board.getSkeletonArea();
             default: return new ArrayList<>();
         }
+    }
+
+    private void saveGame() {
+        JFileChooser fileChooser = new JFileChooser();
+        if (fileChooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
+            try {
+                java.io.File file = fileChooser.getSelectedFile();
+                java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(new java.io.FileOutputStream(file));
+                
+                // Αποθηκεύουμε τα βασικά αντικείμενα
+                out.writeObject(board);
+                out.writeObject(bag);
+                out.writeObject(players);
+                out.writeObject(currentPlayerIndex);
+                
+                out.close();
+                JOptionPane.showMessageDialog(view, "Game Saved!");
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(view, "Error saving game: " + e.getMessage());
+            }
+        }
+    }
+
+    private void loadGame() {
+        JFileChooser fileChooser = new JFileChooser();
+        if (fileChooser.showOpenDialog(view) == JFileChooser.APPROVE_OPTION) {
+            try {
+                java.io.File file = fileChooser.getSelectedFile();
+                java.io.ObjectInputStream in = new java.io.ObjectInputStream(new java.io.FileInputStream(file));
+                
+                // Φορτώνουμε με την ΙΔΙΑ σειρά που τα σώσαμε
+                this.board = (Board) in.readObject();
+                this.bag = (Bag) in.readObject();
+                this.players = (ArrayList<Player>) in.readObject();
+                this.currentPlayerIndex = (Integer) in.readObject();
+                in.close();
+                
+                // Ενημέρωση του GUI (το δύσκολο κομμάτι)
+                refreshLoadedGame();
+                JOptionPane.showMessageDialog(view, "Game Loaded!");
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(view, "Error loading game: " + e.getMessage());
+            }
+        }
+    }
+
+    private void refreshLoadedGame() {
+        // 1. Σταματάμε τον παλιό timer
+        if (turnTimer != null) turnTimer.stop();
+        
+        // 2. Καθαρίζουμε το View
+        view.resetBoardVisuals();
+        view.clearHandPanel();
+        
+        // 3. Ξανα-ζωγραφίζουμε το Board από τα δεδομένα που φορτώσαμε
+        for (Tile t : board.getMosaicArea()) view.addTileToBoard(t);
+        for (Tile t : board.getStatueArea()) view.addTileToBoard(t);
+        for (Tile t : board.getAmphoraArea()) view.addTileToBoard(t);
+        for (Tile t : board.getSkeletonArea()) view.addTileToBoard(t);
+        for (Tile t : board.getLandslideArea()) view.addTileToBoard(t);
+        
+        // 4. Ενημερώνουμε τον τρέχοντα παίκτη
+        Player p = players.get(currentPlayerIndex);
+        view.updatePlayerInfo(p.getName(), p.getColor(), p.calculateScore());
+        
+        for (Tile t : p.getMyTiles()) {
+            view.addTileToHand(t.getImagePath());
+        }
+        
+        // 5. Επανεκκίνηση γύρου
+        timeLeft = 30;
+        view.updateTimer(timeLeft);
+        turnTimer.start();
+        view.playMusicForPlayer(currentPlayerIndex + 1);
+        updateCharacterButtons(p);
     }
 
         

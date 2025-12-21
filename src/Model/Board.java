@@ -1,7 +1,7 @@
 package Model;
 import java.util.ArrayList;
 
-public class Board {
+public class Board implements java.io.Serializable {
 
     private ArrayList<Tile> mosaicArea;
     private ArrayList<Tile> statueArea;

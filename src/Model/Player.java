@@ -1,7 +1,7 @@
 package Model;
 import java.util.*;
 
-public class Player {
+public class Player implements java.io.Serializable{
 
     private String name;
     private int score;

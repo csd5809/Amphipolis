@@ -3,7 +3,7 @@ import java.util.*;
 
 
 
-public class Bag {
+public class Bag implements java.io.Serializable{
 
     private ArrayList<Tile> contents;
 

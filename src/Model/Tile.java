@@ -1,6 +1,6 @@
 package Model;
 
-public abstract class Tile {
+public abstract class Tile implements java.io.Serializable {
 
     
     private int id; // optional . to ebala gia na exw monadiko kwdiko gia kathe plakidio

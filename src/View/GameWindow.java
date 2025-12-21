@@ -42,13 +42,24 @@ public class GameWindow extends JFrame {
     private ArrayList<JLabel> skeletonLabels;
     private ArrayList<JLabel> landslideLabels;
     private javax.sound.sampled.Clip musicClip;
+    private JMenuItem saveItem;
+    private JMenuItem loadItem;
     
 
     public GameWindow() {
+        // gia to save/load
+        JMenuBar menuBar = new JMenuBar();
+        JMenu gameMenu = new JMenu("Game");
+        saveItem = new JMenuItem("Save Game");
+        loadItem = new JMenuItem("Load Game");
+        gameMenu.add(saveItem);
+        gameMenu.add(loadItem);
+        menuBar.add(gameMenu);
+        setJMenuBar(menuBar);
         // scediash parathyrou
         setTitle("Amphipolis");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1225, 858); 
+        setSize(1225, 875); 
         setLayout(null); 
         setResizable(false);
 
@@ -461,4 +472,31 @@ public class GameWindow extends JFrame {
     public JButton getStatueAreaButton() { return statueAreaButton; }
     public JButton getAmphoraAreaButton() { return amphoraAreaButton; }
     public JButton getSkeletonAreaButton() { return skeletonAreaButton; }
+
+
+    // gia save/load
+
+    public JMenuItem getSaveItem() { return saveItem; }
+    public JMenuItem getLoadItem() { return loadItem; }
+
+    public void resetBoardVisuals() {// oti leei o titlos // kanoume reset ola ta visuals gia na katharizei ta grafika prin fortosei to save
+    
+        for (JLabel l : mosaicLabels) layeredPane.remove(l);
+        mosaicLabels.clear();
+
+        for (JLabel l : statueLabels) layeredPane.remove(l);
+        statueLabels.clear();
+
+        for (JLabel l : amphoraLabels) layeredPane.remove(l);
+        amphoraLabels.clear();
+
+        for (JLabel l : skeletonLabels) layeredPane.remove(l);
+        skeletonLabels.clear();
+
+    
+        for (JLabel l : landslideLabels) l.setIcon(null);
+
+        layeredPane.revalidate();
+        layeredPane.repaint();
+    }
 }

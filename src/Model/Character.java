@@ -1,6 +1,6 @@
 package Model;
 
-public abstract class Character {
+public abstract class Character implements java.io.Serializable {
 
     private String name;
     private boolean isUsed; // an exei "kaei" h karta
