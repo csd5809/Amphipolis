@@ -19,20 +19,53 @@ public class Controller {
     private Timer turnTimer;
     private int timeLeft;
 
+    private boolean isSoloMode; // Flag για το αν είναι solo παιχνίδι
+    private Player thief;       // Ο εικονικός παίκτης "Κλέφτης"
+
     public Controller() {
         this.board = new Board();
         this.bag = new Bag(); 
         this.players = new ArrayList<>();
         
         // baze se kathe paiktj kai ena xrwma 
-        players.add(new Player("Player 1", "Yellow"));
-        players.add(new Player("Player 2", "Red"));
-        players.add(new Player("Player 3", "Blue"));
-        players.add(new Player("Player 4", "Black"));
+        // --- ΝΕΟΣ ΚΩΔΙΚΑΣ ΓΙΑ ΕΠΙΛΟΓΗ MODE ---
+        String[] options = {"1 Player (Solo)", "4 Players"};
+        int response = JOptionPane.showOptionDialog(null, "Select Game Mode:", "Amphipolis",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, options, options[0]);
 
-        this.currentPlayerIndex = (int) (Math.random() * 4);
+        isSoloMode = (response == 0); // Αν διάλεξε το 0, είναι Solo
+
+        if (isSoloMode) {
+            // Δημιουργία παίκτη και κλέφτη
+            players.add(new Player("Player 1", "Yellow"));
+            thief = new Player("The Thief", "Black"); // Ο κλέφτης
+            this.currentPlayerIndex = 0; // Παίζει πάντα ο παίκτης 1
+
+            // Τοποθέτηση 8 πλακιδίων κατολίσθησης στην είσοδο (Κανόνας Solo)
+            for (int i = 0; i < 8; i++) {
+                LandslideTile lt = new LandslideTile(-1 - i, "resources/images/landslide.png");
+                board.addTileToArea(lt);
+            }
+            JOptionPane.showMessageDialog(null, "Solo Mode Started! 8 Landslide tiles added. Watch out for the Thief!");
+        } else {
+            // Κλασικό παιχνίδι 4 παικτών
+            players.add(new Player("Player 1", "Yellow"));
+            players.add(new Player("Player 2", "Red"));
+            players.add(new Player("Player 3", "Blue"));
+            players.add(new Player("Player 4", "Black"));
+            this.currentPlayerIndex = (int) (Math.random() * 4);
+        }
+        // -------------------------------------
 
         this.view = new GameWindow();
+
+        if (isSoloMode) {
+            // Τώρα που υπάρχει το view, εμφανίζουμε τα landslides που βάλαμε στο board πριν
+            for (Tile t : board.getLandslideArea()) {
+                view.addTileToBoard(t);
+            }
+        }
 
         initListeners();
         
@@ -93,10 +126,17 @@ public class Controller {
         ArrayList<Tile> taken = new ArrayList<>();
         
         for (int i = 0; i < count; i++) {
-            Tile t = areaTiles.remove(0);
+            int lastIndex = areaTiles.size() - 1;
+            
+            // Αφαιρούμε από το τέλος της λίστας
+            Tile t = areaTiles.remove(lastIndex); 
+            
             taken.add(t);
             view.addTileToHand(t.getImagePath());
             board.removeTileFromArea(t);
+            
+            // Ενημερώνουμε το View να σβήσει το τελευταίο graphic element
+            view.removeTileFromBoard(t, lastIndex);
         }
         
         p.addTiles(taken);
@@ -125,9 +165,14 @@ public class Controller {
             int count = Math.min(2, tiles.size());
             for (int i = 0; i < count; i++) {
                 if (!tiles.isEmpty()) {
-                    Tile t = tiles.remove(0);
+                    int lastIndex = tiles.size() - 1;
+                    Tile t = tiles.remove(lastIndex);
+                    
                     p.addTiles(new ArrayList<>(java.util.Arrays.asList(t)));
                     board.removeTileFromArea(t);
+                    
+                    view.addTileToHand(t.getImagePath());
+                    view.removeTileFromBoard(t, lastIndex);
                 }
             }
             p.setCoderSelectedArea(-1); // Reset
@@ -183,35 +228,34 @@ public class Controller {
         for (Tile t : drawn) {
             if (t instanceof LandslideTile) {
                 board.addTileToArea(t);
-                view.addTileToBoard(t);  // ta emganizoume sto board sthn katallhlh thesi
-                JOptionPane.showMessageDialog(view, "You drew a landslide tile!");// gia kathe tetoio tile emfanizei auto to mhnyma
+                view.addTileToBoard(t);
+                JOptionPane.showMessageDialog(view, "You drew a landslide tile!");
+
+                // --- ΕΛΕΓΧΟΣ SOLO MODE & ΚΛΕΦΤΗ ---
+                if (isSoloMode) {
+                    JOptionPane.showMessageDialog(view, "The Thief strikes! He takes all visible findings!");
+                    handleThiefTurn(); // Καλούμε τη μέθοδο του κλέφτη
+                    
+                    // Έλεγχος αν γέμισε η είσοδος ΜΕΤΑ την κίνηση του κλέφτη
+                    if (board.isEntranceFull()) {
+                        handleGameOver(); // Ξεχωριστή μέθοδος για καθαρό κώδικα
+                    } else {
+                        // Αν δεν τελείωσε το παιχνίδι, η σειρά του παίκτη τελειώνει ΑΜΕΣΩΣ
+                        p.setHasPlayed(true); // Θεωρούμε ότι έπαιξε για να μην κολλήσει
+                        endTurn(true); // Force end turn
+                    }
+                    return; // Σταματάμε το loop, δεν τραβάει άλλα πλακίδια
+                }
+                // ----------------------------------
+
                 if (board.isEntranceFull()) {
-                    turnTimer.stop();
-                    calculateStatuePoints();
-                    Player winner = players.get(0);
-                    for (Player p1 : players) {
-                        if (p1.calculateScore() > winner.calculateScore()) {
-                            winner = p1;
-                        }
-                    }
-                    StringBuilder message = new StringBuilder("Game Over!\n\n");
-                    message.append("Final Scores:\n");
-
-                    for (Player p2 : players) {
-                        message.append(p2.getName()).append(": ").append(p2.calculateScore()).append(" points\n");
-                    }
-
-                    message.append("\nWinner: ").append(winner.getName()).append("!");
-
-                    JOptionPane.showMessageDialog(view, message.toString());
-
-                    view.stopMusic();
-                    System.exit(0);
+                     handleGameOver(); // (Θα φτιάξουμε αυτή τη βοηθητική κάτω)
+                     return;
                 }
             } else {
                 findings.add(t);
-                board.addTileToArea(t);  // ta emfanizei kai sth sosth thesi 
-                view.addTileToBoard(t);  // kai sto board
+                board.addTileToArea(t);
+                view.addTileToBoard(t);
                 view.addTileToHand(t.getImagePath());
             }
         }
@@ -222,6 +266,44 @@ public class Controller {
         // to idio me prin
         view.updatePlayerInfo(p.getName(), p.getColor(), p.calculateScore());
     }
+    private void handleGameOver() {
+        turnTimer.stop();
+        calculateStatuePoints();
+        
+        StringBuilder message = new StringBuilder("Game Over!\n\n");
+        
+        if (isSoloMode) {
+            int playerScore = players.get(0).calculateScore();
+            int thiefScore = thief.calculateScore();
+            
+            message.append("Player 1 Score: ").append(playerScore).append("\n");
+            message.append("Thief Score: ").append(thiefScore).append("\n\n");
+            
+            if (playerScore > thiefScore) {
+                message.append("VICTORY! You defeated the Thief!");
+            } else {
+                message.append("DEFEAT! The Thief has more points.");
+            }
+        } else {
+            // Υπάρχουσα λογική για 4 παίκτες
+            Player winner = players.get(0);
+            for (Player p1 : players) {
+                if (p1.calculateScore() > winner.calculateScore()) {
+                    winner = p1;
+                }
+            }
+            message.append("Final Scores:\n");
+            for (Player p2 : players) {
+                message.append(p2.getName()).append(": ").append(p2.calculateScore()).append(" points\n");
+            }
+            message.append("\nWinner: ").append(winner.getName()).append("!");
+        }
+
+        JOptionPane.showMessageDialog(view, message.toString());
+        view.stopMusic();
+        System.exit(0);
+    }
+
     
     private void useCharacter(int index) {
         Player p = players.get(currentPlayerIndex);
@@ -294,7 +376,11 @@ public class Controller {
         }
         */
 
-        currentPlayerIndex = (currentPlayerIndex + 1) % 4;
+        if (isSoloMode) {
+            currentPlayerIndex = 0; // Μένει πάντα στον Player 1
+        } else {
+            currentPlayerIndex = (currentPlayerIndex + 1) % 4;
+        }
         startTurn();
     }
     private void calculateStatuePoints() { //  xreiazetai allh synarthsh gia ta score twm statue giati prepei na ginei sto telos kathe paixnidiou
@@ -345,13 +431,19 @@ public class Controller {
         if (choice >= 0) {
             ArrayList<Tile> tiles = getAreaTiles(choice);
             if (!tiles.isEmpty()) {
-                Tile taken = tiles.remove(0);
+                int lastIndex = tiles.size() - 1;
+                Tile taken = tiles.remove(lastIndex);
+                
                 ArrayList<Tile> temp = new ArrayList<>();
                 temp.add(taken);
                 p.addTiles(temp);
                 view.addTileToHand(taken.getImagePath());
                 board.removeTileFromArea(taken);
-                return true; // Πέτυχε
+                
+                // Αφαιρούμε από τα γραφικά το τελευταίο
+                view.removeTileFromBoard(taken, lastIndex);
+                
+                return true;
             } else {
                  JOptionPane.showMessageDialog(view, "Area is empty!");
                  return false; // Άδεια περιοχή, δεν έγινε ενέργεια
@@ -382,10 +474,14 @@ public class Controller {
 
                 for (int i = 0; i < count; i++) {
                     if (!tiles.isEmpty()) {
-                        Tile taken = tiles.remove(0);
+                        int lastIndex = tiles.size() - 1;
+                        Tile taken = tiles.remove(lastIndex);
+                        
                         p.addTiles(new ArrayList<>(java.util.Arrays.asList(taken)));
                         view.addTileToHand(taken.getImagePath());
                         board.removeTileFromArea(taken);
+                        
+                        view.removeTileFromBoard(taken, lastIndex);
                     }
                 }
                 view.updatePlayerInfo(p.getName(), p.getColor(), p.calculateScore());
@@ -413,10 +509,14 @@ public class Controller {
         }
         
         for (int i = 0; i < count; i++) {
-            Tile taken = tiles.remove(0);
+            int lastIndex = tiles.size() - 1;
+            Tile taken = tiles.remove(lastIndex);
+            
             p.addTiles(new ArrayList<>(java.util.Arrays.asList(taken)));
             view.addTileToHand(taken.getImagePath());
             board.removeTileFromArea(taken);
+            
+            view.removeTileFromBoard(taken, lastIndex);
         }
         view.updatePlayerInfo(p.getName(), p.getColor(), p.calculateScore());
         JOptionPane.showMessageDialog(view, "Took " + count + " more tiles from same area!");
@@ -434,10 +534,15 @@ public class Controller {
             if (i != p.getLastSelectedArea()) {
                 ArrayList<Tile> tiles = getAreaTiles(i);
                 if (!tiles.isEmpty()) {
-                    Tile t = tiles.remove(0);
+                    int lastIndex = tiles.size() - 1;
+                    Tile t = tiles.remove(lastIndex);
+                    
                     p.addTiles(new ArrayList<>(java.util.Arrays.asList(t)));
                     view.addTileToHand(t.getImagePath());
                     board.removeTileFromArea(t);
+                    
+                    view.removeTileFromBoard(t, lastIndex);
+                    
                     taken++;
                 }
             }
@@ -546,6 +651,44 @@ public class Controller {
         turnTimer.start();
         view.playMusicForPlayer(currentPlayerIndex + 1);
         updateCharacterButtons(p);
+    }
+
+
+    // Νέα μέθοδος για τον Κλέφτη (Solo Mode)
+    private void handleThiefTurn() {
+        // Παίρνουμε όλα τα πλακίδια από τις 4 περιοχές
+        ArrayList<Tile> stolenTiles = new ArrayList<>();
+        
+        // 1. Mosaics
+        stolenTiles.addAll(board.getMosaicArea());
+        for(Tile t : board.getMosaicArea()) view.removeTileFromBoard(t, 0); // Update View (θα χρειαστεί μια μικρή αλλαγή στο View, δες παρακάτω, ή χρήση της resetBoardVisuals αν θες πιο απλά)
+        board.getMosaicArea().clear(); // Clear Model
+
+        // 2. Statues
+        stolenTiles.addAll(board.getStatueArea());
+        for(Tile t : board.getStatueArea()) view.removeTileFromBoard(t, 1);
+        board.getStatueArea().clear();
+
+        // 3. Amphorae
+        stolenTiles.addAll(board.getAmphoraArea());
+        for(Tile t : board.getAmphoraArea()) view.removeTileFromBoard(t, 2);
+        board.getAmphoraArea().clear();
+
+        // 4. Skeletons
+        stolenTiles.addAll(board.getSkeletonArea());
+        for(Tile t : board.getSkeletonArea()) view.removeTileFromBoard(t, 3);
+        board.getSkeletonArea().clear();
+
+        // Ο κλέφτης τα αποθηκεύει
+        thief.addTiles(stolenTiles);
+        
+        // Επειδή η removeTileFromBoard στο View που έχεις είναι με index, 
+        // ένας πιο εύκολος τρόπος να καθαρίσεις τα γραφικά χωρίς errors είναι:
+        view.resetBoardVisuals(); 
+        // Και να ξαναζωγραφίσεις μόνο τα landslides που έμειναν (αφού τα άλλα τα πήρε ο κλέφτης)
+        for (Tile t : board.getLandslideArea()) view.addTileToBoard(t);
+        
+        System.out.println("Thief stole " + stolenTiles.size() + " tiles. Thief Score: " + thief.calculateScore());
     }
 
         
