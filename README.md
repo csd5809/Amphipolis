@@ -1,18 +1,39 @@
-## Getting Started
+# Amphipolis Game (Java Project)
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+**Φοιτητής:** Χριστοφοράκης Χριστόφορος
+**ΑΜ:** CSD5809
+**Μάθημα:** HY-252 Αντικειμενοστρεφής Προγραμματισμός
 
-## Folder Structure
+## Περιγραφή
+Το παρόν project αποτελεί την υλοποίηση του επιτραπέζιου παιχνιδιού "Amphipolis" σε γλώσσα Java, στα πλαίσια της εργασίας του μαθήματος. Υποστηρίζει παιχνίδι για 4 παίκτες καθώς και Solo Mode (1 παίκτης εναντίον του Κλέφτη).
 
-The workspace contains two folders by default, where:
+## Οδηγίες Εκτέλεσης
+1. Ανοίξτε το project στο IDE της επιλογής σας (π.χ. VS Code, NetBeans, IntelliJ).
+2. Βεβαιωθείτε ότι η βιβλιοθήκη **JUnit 4** και **Hamcrest** είναι στο classpath (για τα tests).
+3. Εκτελέστε την κλάση `Controller.java` (βρίσκεται στο πακέτο `src/Controller`).
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## Υλοποίηση & Αρχιτεκτονική
+Η εφαρμογή ακολουθεί το πρότυπο σχεδίασης **MVC (Model-View-Controller)**:
+- **Model:** Περιέχει την λογική των δεδομένων (Player, Board, Tile, Bag, Characters).
+- **View:** Υλοποιεί το γραφικό περιβάλλον με Java Swing (GameWindow).
+- **Controller:** Συντονίζει το παιχνίδι και διαχειρίζεται τους κανόνες.
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+## Λειτουργίες (Features)
+* **Game Modes:**
+    * **4 Players:** Κλασικό παιχνίδι με εναλλαγή γύρων.
+    * **Solo Mode:** Παιχνίδι ενάντια σε εικονικό αντίπαλο ("The Thief") με ειδικούς κανόνες αφαίρεσης πλακιδίων.
+* **Χαρακτήρες:** Πλήρης υλοποίηση των ικανοτήτων (Assistant, Archaeologist, Digger, Professor, The Coder).
+* **Βαθμολογία:** Αυτόματος υπολογισμός σκορ στο τέλος του παιχνιδιού βάσει των κανόνων.
+* **Save/Load:** Δυνατότητα αποθήκευσης και φόρτωσης παιχνιδιού (Serialization).
+* **Ήχος:** Ενσωμάτωση ηχητικών εφέ/μουσικής.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## JUnit Tests
+Έχουν δημιουργηθεί Unit Tests στο αρχείο `AmphipolisTest.java` που ελέγχουν:
+1. Τον υπολογισμό σκορ για Μωσαϊκά (ομοιογένεια χρωμάτων).
+2. Τον υπολογισμό σκορ για Αμφορείς (διαφορετικά χρώματα).
+3. Τον υπολογισμό σκορ για Σκελετούς (οικογένειες).
+4. Τον έλεγχο τερματισμού (γεμάτη είσοδος).
+5. Τη χρήση χαρακτήρων.
 
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## Επιπλέον Σημειώσεις
+Για την υλοποίηση των γραφικών χρησιμοποιήθηκε `JLayeredPane` για σωστή τοποθέτηση των αντικειμένων, ενώ έχουν προστεθεί Javadoc σχόλια για την τεκμηρίωση του κώδικα.
