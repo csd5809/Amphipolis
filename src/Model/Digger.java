@@ -3,17 +3,21 @@ package Model;
 public class Digger extends Character {
 
 
+    /**
+     * constructor
+     * @post dhmiourgeitai o xarakthras Digger me to onoma tou
+     */
     public Digger() {
         super("Digger");
     }
 
     /**
-     * Ylopoihsh ths ikanothtas tou Ekskafea.
-     * @pre O paikths prepei na exei hdh epilexei mia perioxi
-     * @post O paikths pairnei alla 2 plakidia apo thn IDIA perioxi
+     * ylopoihsh ths ikanothtas tou Ekskafea.
+     * @pre o paikths prepei na exei hdh epilexei mia perioxi
+     * @post o paikths pairnei alla 2 plakidia apo thn IDIA perioxi
      */
     @Override
-    public void ability() {
+    public void ability() {// again ola auta ginontai apo ton controller
         setUsed(true);
 
 

@@ -19,9 +19,19 @@ public abstract class Character implements java.io.Serializable {
      * @pre h karta na mhn exei xrhsimopoih8ei (isUsed == false)
      * @post Ektelietai h eidikh energeia kai h karta "kaigetai"
      */
-    public abstract void ability(); // Abstract methodos thn opoia tha ylopoihsoyn oi upoklaseis
+    public abstract void ability(); // abstract methodos thn opoia tha ylopoihsoyn oi upoklaseis
 
+
+    /**
+     * epistrefei to onoma tou xarakthra
+     * @return to onoma tou xarakthra
+     */
     public boolean isUsed() { return isUsed; }
+
+    /**
+     * orizei an exei xrhsimopoih8ei h karta
+     * @param used true an exei xrhsimopoih8ei alliws false
+     */
     public void setUsed(boolean used) { isUsed = used; }
     
 }

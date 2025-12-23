@@ -4,9 +4,9 @@ public abstract class FindingTile extends Tile {
 
 
     /**
-     * Constructor
+     * constructor
      * @param id o monadikos kodikos
-     * @param imagePath To path tis eikonas
+     * @param imagePath to path tis eikonas
      */
     public FindingTile(int id, String imagePath) {
         super(id, imagePath);

@@ -15,12 +15,12 @@ public class LandslideTile extends Tile {
 
     
     /**
-     * Epistrefei to xrwma tou plakidiou
-     * Ta plakidia katolisthisis den exoun xrwma paixnidiou, opote epistrefoume mia typiki timi
-     * @return "Brown" ws endeixi oti einai petra
+     * epistrefei to xrwma tou plakidiou
+     * ta plakidia katolisthisis den exoun xrwma paixnidiou, opote epistrefoume mia typiki timi
+     * @return "brown" ws endixi oti einai petra
      */
     public String getColor() {
-        return "Brown";
+        return "brown";
     }
     
 }

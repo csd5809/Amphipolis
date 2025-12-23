@@ -3,17 +3,22 @@ package Model;
 public class TheCoder extends Character {
     
 
+    /**
+     * constructor
+     * @post dhmiourgeitai o xarakthras The Coder me to onoma tou
+     */
     public TheCoder() {
         super("The Coder");
     }
+
     // prosthesa ena pedio hasplayedthecoder gia thn ylopoihsh sth fash b 
     /**
-     * Ylopoihsh ths ikanothtas tou Programmatisti
+     * ylopoihsh ths ikanothtas tou Programmatisti
      * @post O paikths "kleidwnei" mia epilogh perioxis gia ton epomeno gyro
      * Shmeiwsh: H actual lhpsh twn plakidiwn tha ginei sth methodo nextTurn() tou paikth
      */
     @Override
-    public void ability() {
+    public void ability() {// ola auta ginontai apo ton controller
 
         //todo fash B - logikh gia "kleidwma" perioxis
         // o paikths epilegei mia perioxh

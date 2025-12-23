@@ -5,9 +5,9 @@ public class Player implements java.io.Serializable{
 
     private String name;
     private int score;
-    private String color; // To xrwma tou paikth (optional px "red", "blue" ktl)
-    private ArrayList<Tile> myTiles; // H syllogh tou
-    private ArrayList<Character> myCharacters; // Oi kartes tou
+    private String color; // to xrwma tou paikth (optional px "red", "blue" ktl)
+    private ArrayList<Tile> myTiles; // h syllogh tou
+    private ArrayList<Character> myCharacters; // oi kartes tou
 
     private boolean hasPlayed; //an epaikse ston trexonta gyro
     private boolean hasPlayedCoder;//an exei xrhsimopoihsei ton xarakthra "The Coder" ston trexonta gyro
@@ -15,7 +15,7 @@ public class Player implements java.io.Serializable{
     private int lastSelectedArea = -1;
     private int coderSelectedArea = -1;
     private boolean hasSelectedFromArea = false;
-    private boolean hasPickedFromBoard; // Αν έχει πάρει πλακίδια από περιοχή στο βήμα 2
+    private boolean hasPickedFromBoard; // an exei parei plakidia apo perioxi sto bhma 2
 
     
 
@@ -23,9 +23,9 @@ public class Player implements java.io.Serializable{
     /**
      * Constructor
      * @pre to onoma kai to xrwma na einai egkura
-     * @post O paikths dhmiourgeitai me arxiko skoro 0 kai gemato xeri xarakthρων.
-     * @param name To onoma tou paikth.
-     * @param color To xrwma tou paikth.
+     * @post o paikths dhmiourgeitai me arxiko skoro 0 kai gemato xeri xarakthrwn
+     * @param name to onoma tou paikth
+     * @param color to xrwma tou paikth
      */
     public Player(String name, String color) {
         // todo sth fash B
@@ -40,7 +40,7 @@ public class Player implements java.io.Serializable{
         this.hasPlayedCoder = false;
         this.hasPickedFromBoard = false;
 
-        // Μοιράζουμε τους 5 χαρακτήρες στον παίκτη
+        // moirazoume tous 5 xarakthres ston paikth
         myCharacters.add(new Assistant());
         myCharacters.add(new Archaeologist());
         myCharacters.add(new Digger());
@@ -50,9 +50,9 @@ public class Player implements java.io.Serializable{
 
     /**
      * ypologizei tous pontous tou paikth me bash tous kanones tou paixnidiou
-     * @pre To paixnidi na exei teleiwsei h na theloume endiameso skore.
+     * @pre to paixnidi na exei teleiwsei h na theloume endiameso skore.
      * @post to pedio score enhmerwnetai me to neo skore tou paikth
-     * @return To synoliko skore.
+     * @return to synoliko skore.
      */
     public int calculateScore() {
         int totalScore = 0;
@@ -124,9 +124,9 @@ public class Player implements java.io.Serializable{
 
     /**
      * xrhsimopoiei mia karta xarakthra
-     * @pre O paikths na exei diathesimh thn karta kai na mhn thn exei ksanapaiksei
-     * @post H karta markaretai ws xrhsimopoihmenh (used)
-     * @param character H karta xarakthra pros xrhsh
+     * @pre o paikths na exei diathesimh thn karta kai na mhn thn exei ksanapaiksei
+     * @post h karta markaretai ws xrhsimopoihmenh (used)
+     * @param character h karta xarakthra pros xrhsh
      */
     public void useCharacter(Character character) {
         if (!character.isUsed()) {
@@ -138,8 +138,14 @@ public class Player implements java.io.Serializable{
         }
     }
 
-    // --- Helper Methods για τον Controller ---
+    // helper methods gia ton controller
 
+
+    /**
+     * prosthetei mia lista apo plakidia sti sylloji tou paikti.
+     * @param tiles h lista me ta nea plakidia.
+     * @post ta plakidia prostithentai sti lista myTiles tou paikti.
+     */
     public void addTiles(ArrayList<Tile> tiles) {
         this.myTiles.addAll(tiles);
     }
@@ -148,43 +154,138 @@ public class Player implements java.io.Serializable{
         this.score += s;
     }
 
+
+    /**
+     * metraei poses Sfigges exei o paiktis.
+     * xrisimopoieitai gia ton ypologismo twn pontwn twn agalmatwn sto telos.
+     * @return to plithos twn plakidiwn SphinxTile.
+     */
     public int getSphinxCount() {
         int c = 0;
         for(Tile t : myTiles) if(t instanceof SphinxTile) c++;
         return c;
     }
 
+
+    /**
+     * metraei poses Karyatides exei o paiktis.
+     * @return to plithos twn plakidiwn CaryatidTile.
+     */
     public int getCaryatidCount() {
         int c = 0;
         for(Tile t : myTiles) if(t instanceof CaryatidTile) c++;
         return c;
     }
 
-    // --- Getters & Setters ---
+    // setters and getters
+
+
+    /**
+     * 
+     * @return to onoma tou paikth
+     */
     public String getName() { return name; }// apo tin a fash
+
+
+    /**
+     * 
+     * @return ta tiles tou paikth
+     */
     public ArrayList<Tile> getMyTiles() { return myTiles; } // apo thn a fash 
+
+    /**
+     * 
+     * @return tous xarakthres tou paikth
+     */
     public ArrayList<Character> getMyCharacters() { return myCharacters; }
-    
+
+    /**
+     * 
+     * @return an exei paixtei o paikths ston trexonta gyro
+     */
     public boolean hasPlayed() { return hasPlayed; }
+
+
+    /**
+     * 
+     * @param hasPlayed orisma gia na orisoume an exei paixtei o paikths ston trexonta gyro
+     */
     public void setHasPlayed(boolean hasPlayed) { this.hasPlayed = hasPlayed; }
 
+
+    /**
+     * 
+     * @return an exei xrhsimopoihsei ton xarakthra "The Coder" ston trexonta gyro
+     */
     public boolean hasPlayedCoder() { return hasPlayedCoder; }
+
+
+    /**
+     * 
+     * @param hasPlayedCoder orisma gia na orisoume an exei xrhsimopoihsei ton xarakthra "The Coder" ston trexonta gyro
+     */
     public void setHasPlayedCoder(boolean hasPlayedCoder) { this.hasPlayedCoder = hasPlayedCoder; }
 
+
+
+    /**
+     * 
+     * @return to xrwma tou paikth
+     */
     public String getColor() { 
         return color; 
     }
 
 
+    /**
+     * 
+     * @return thn teleytaia perioxh pou epilekse o paikths
+     */
     public int getLastSelectedArea() { return lastSelectedArea; }
+
+    /**
+     * 
+     * @param area orisma gia na orisoume tin teleytaia perioxh pou epilekse o paikths
+     */
     public void setLastSelectedArea(int area) { this.lastSelectedArea = area; }
 
+
+    /**
+     * 
+     * @return tin perioxh pou epilekse o paikths me ton xarakthra "The Coder"
+     */
     public int getCoderSelectedArea() { return coderSelectedArea; }
+
+
+    /**
+     * 
+     * @param area orisma gia na orisoume tin perioxh pou epilekse o paikths me ton xarakthra "The Coder"
+     */
     public void setCoderSelectedArea(int area) { this.coderSelectedArea = area; }
 
+
+    /**
+     * 
+     * @return an o paikths exei epileksei plakidia apo mia perioxi
+     */
     public boolean hasSelectedFromArea() { return hasSelectedFromArea; }
+
+    /**
+     * 
+     * @param val orisma gia na orisoume an o paikths exei epileksei plakidia apo mia perioxi
+     */
     public void setHasSelectedFromArea(boolean val) { this.hasSelectedFromArea = val; }
+
+    /**
+     * 
+     * @return an o paikths exei parei plakidia apo tin pinaka ston 2o bhma
+     */
     public boolean hasPickedFromBoard() { return hasPickedFromBoard; }
+
+    /**
+     * 
+     * @param hasPickedFromBoard orisma gia na orisoume an o paikths exei parei plakidia apo tin pinaka ston 2o bhma
+     */
     public void setHasPickedFromBoard(boolean hasPickedFromBoard) { this.hasPickedFromBoard = hasPickedFromBoard; }
 
 }

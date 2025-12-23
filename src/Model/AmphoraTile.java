@@ -6,7 +6,7 @@ public class AmphoraTile  extends FindingTile{
     private String color; // Blue, Brown, Red, Green, Yellow, Purple
 
     /**
-     * Constructor
+     * constructor
      * @param id to id
      * @param imagePath To path eikonas
      * @param color To xroma tou amphorea
@@ -17,8 +17,8 @@ public class AmphoraTile  extends FindingTile{
     }
 
     /**
-     * Epistrefei to xroma tou amphorea
-     * @return To xroma os String
+     * epistrefei to xroma tou amphorea
+     * @return To xroma os string
      */
     @Override
     public String getColor() {

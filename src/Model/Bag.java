@@ -8,8 +8,8 @@ public class Bag implements java.io.Serializable{
     private ArrayList<Tile> contents;
 
     /**
-     * Constructor
-     * @post Αarxikopoiei th sakoula me ola ta aparaithta plakidia tou paixnidiou.
+     * constructor
+     * @post arxikopoiei th sakoula me ola ta aparaithta plakidia tou paixnidiou.
      */
     public Bag(){
         // todo sth fash B
@@ -17,6 +17,10 @@ public class Bag implements java.io.Serializable{
         initializeBag();
     }
 
+    /**
+     * arxikopoiei to periexomeno tis sakoulas me ta plakidia
+     * @post h sakoula periexei ola ta plakidia tou paixnidiou se tuxaia seira
+     */
     private void initializeBag() {
         // todo sth fash B
         int idCounter = 0;

@@ -5,10 +5,10 @@ public class MosaicTile extends FindingTile {
     private String color; // "Green", "Red", "Yellow"
 
     /**
-     * Constructor
+     * constructor
      * @param id to ID
-     * @param imagePath To path eikonas
-     * @param color To xroma tou mosaikou
+     * @param imagePath to path eikonas
+     * @param color to xroma tou mosaikou
      */
     public MosaicTile(int id, String imagePath, String color) {
         super(id, imagePath);
@@ -16,8 +16,8 @@ public class MosaicTile extends FindingTile {
     }
 
     /**
-     * Epistrefei to xroma tou mosaikou
-     * @return To xroma (Green, Red, Yellow)
+     * epistrefei to xroma tou mosaikou
+     * @return to xroma (Green, Red, Yellow)
      */
     @Override
     public String getColor() {

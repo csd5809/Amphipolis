@@ -10,11 +10,10 @@ public class Board implements java.io.Serializable {
     private ArrayList<Tile> landslideArea;
 
     /**
-    *Constructor
-    *Arxikopoiei tis listes pou antistoixoun stis perioxes tou board
+    *constructor
+    *arxikopoiei tis listes pou antistoixoun stis perioxes tou board
     *@post dimiourgountai kenes listes gia kathe perioxh tou board
     */
-
     public Board(){
         // todo sth fash B
         mosaicArea = new ArrayList<>();
@@ -26,7 +25,7 @@ public class Board implements java.io.Serializable {
 
 
     /**
-    *Prostethei tile stin katallili perioxh tou board
+    *prostethei tile stin katallili perioxh tou board
     *@pre to tile prepe ina mhn einai null kai h antistoixh perioxh prepei na mhn exei gemisei
     *@post to plakidio prostithetai sth sosth lista kai to plithos ton stoixeiwn ths listas auksanetai kata ena
     * @param tile to plakidio pou tha prostethei sto board
@@ -56,10 +55,10 @@ public class Board implements java.io.Serializable {
     }
     
     /**
-     * Afairei ena tile apo tin katallili perioxh tou board
-     * @pre To tile prepei na yparxei sti sosti perioxh
-     * @post To tile afaireitai apo ti lista kai to plithos meionetai kata ena
-     * @param tile To plakidio pou tha afairethei
+     * afairei ena tile apo tin katallili perioxh tou board
+     * @pre to tile prepei na yparxei sti sosti perioxh
+     * @post to tile afaireitai apo ti lista kai to plithos meionetai kata ena
+     * @param tile to plakidio pou tha afairethei
      */
     public void removeTileFromArea(Tile tile) {
         if (tile instanceof MosaicTile) {
@@ -77,11 +76,39 @@ public class Board implements java.io.Serializable {
 
 
     //setters and getters
+
+    /**
+     * 
+     * @return tin mosaikh perioxh tou board
+     */
     public ArrayList<Tile> getMosaicArea() { return mosaicArea; }
+
+    /**
+     * 
+     * @return tin perioxh twn agalmatwn tou board
+     */
     public ArrayList<Tile> getStatueArea() { return statueArea; }
+
+
+    /**
+     * 
+     * @return tin perioxh twn amphorwn tou board
+     */
     public ArrayList<Tile> getAmphoraArea() { return amphoraArea; }
+
+    /**
+     * 
+     * @return tin perioxh twn skeletwn tou board
+     */
+
     public ArrayList<Tile> getSkeletonArea() { return skeletonArea; }
+
+    /**
+     * 
+     * @return tin perioxh twn katolisthisewn tou board
+     */
     public ArrayList<Tile> getLandslideArea() { return landslideArea; }
+
 
 
 

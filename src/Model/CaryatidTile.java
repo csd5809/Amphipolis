@@ -2,16 +2,17 @@ package Model;
 
 public class CaryatidTile extends StatueTile{
     /**
-     * Constructor
-     * @param id To monadiko ID
-     * @param imagePath To path tis eikonas
+     * constructor
+     * @param id to monadiko ID
+     * @param imagePath to path tis eikonas
      */
     public CaryatidTile(int id, String imagePath) {
         super(id, imagePath);
     }
 
     /**
-     * Ylopoiisi tis ypoxreotikis methodou getColor
+     * 
+     * @return to onoma/"xrwma" tou plakidiou
      */
     @Override
     public String getColor() {

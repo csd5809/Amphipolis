@@ -46,6 +46,11 @@ public class GameWindow extends JFrame {
     private JMenuItem loadItem;
     
 
+
+    /**
+     * Constructor
+     * @post Dhmioyrgeitai to paixnidiako parathyro me ola ta stoixeia tou UI
+     */
     public GameWindow() {
         // gia to save/load
         JMenuBar menuBar = new JMenuBar();
@@ -106,6 +111,11 @@ public class GameWindow extends JFrame {
         setVisible(true);
     }
 
+
+
+    /**
+     * Arxikopoiei to periexomeno tou deksiou panel
+     */
     private void initRightPanelContent() {
 
 
@@ -219,6 +229,11 @@ public class GameWindow extends JFrame {
         rightPanel.add(scrollPane);
     }
 
+
+    /**
+     * Dhmioyrgei ta grafika stoixeia gia tis perioxes tou tablo sto layered pane
+     * @post Dhmioyrgountai ta koumpia kai to panel gia tis perioxes tou tablo
+     */
     private void createBoardAreas() {
         // moasic area
         mosaicAreaButton = new JButton();
@@ -272,7 +287,7 @@ public class GameWindow extends JFrame {
             landslideGridPanel.add(slot);
         }
         
-        layeredPane.add(landslideGridPanel, Integer.valueOf(2));  // ΕΔΩ ΑΛΛΑΞΕ
+        layeredPane.add(landslideGridPanel, Integer.valueOf(2));
         
         // apenergopoihsh tooltip. mou ebgaze paraksena ta koumpia gia auto to ekana etsi 
         mosaicAreaButton.setToolTipText(null);
@@ -281,6 +296,13 @@ public class GameWindow extends JFrame {
         skeletonAreaButton.setToolTipText(null);
     }
 
+
+
+    /**
+     * Fortwnei mia eikona apo to sygkekrimeno monopati
+     * @param path To monopati tis eikonas
+     * @return To antikeimeno ImageIcon an brethike, alliws null
+     */
     private void addHeader(String text) {
         JLabel header = new JLabel(text);
         header.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -292,6 +314,13 @@ public class GameWindow extends JFrame {
 
     // upadters gia kathe pragma (timer - player info)
 
+    /**
+     * Enimerwnei tis plirofories tou paikti sto deksi panel
+     * @param name To onoma tou paikti
+     * @param colorHex To xrwma tou paikti (ws keimeno)
+     * @param score To trexon skor tou paikti
+     * @post To UI emfanizei ta nea dedomena
+     */
     public void updatePlayerInfo(String name, String colorHex, int score) {
         playerNameLabel.setText(name);
         try {
@@ -307,12 +336,28 @@ public class GameWindow extends JFrame {
         scoreLabel.setText("Score: " + score);
     }
 
+
+
+    /**
+     * Enimerwnei ton timer sto UI.
+     * @param seconds O ypoloipos xronos se deuterolepta
+     * @post To UI emfanizei ton nea ypoloipo xrono
+     */
     public void updateTimer(int seconds) {
         timerLabel.setText("Time left: " + seconds + "s");
         if (seconds <= 5) timerLabel.setForeground(Color.RED);
         else timerLabel.setForeground(new Color(0, 100, 0)); 
     }
 
+
+
+
+
+    /**
+     * Prosthetei grafika ena plakidio stin perioxi tou paikth.
+     * @param imagePath To monopati tis eikonas tou plakidiou.
+     * @post Dhmioyrgeitai ena JLabel me tin eikona tou plakidiou kai prostithetai sto panel tou paikti.
+     */
     public void addTileToHand(String imagePath) {
         // kanw thn synarthsh poy einai ligo pio katw(eksigo ekei giati)
         ImageIcon icon = loadImage(imagePath);
@@ -333,12 +378,25 @@ public class GameWindow extends JFrame {
         }
     }
 
+
+
+
+    /**
+     * Katharizei ola ta plakidia apo to panel tou paikti
+     * @post To panel tou paikti einai adeio kai ginetai repaint
+     */
     public void clearHandPanel() {
         playerHandPanel.removeAll();
         playerHandPanel.revalidate();
         playerHandPanel.repaint();
     }
 
+
+    /**
+     * Prosthetei grafika ena plakidio stin antistoixi perioxi tou tablo
+     * @param tile To antikeimeno Tile pou prepei na zografistei
+     * @post Dimiourgeitai ena JLabel me tin eikona tou plakidiou kai prostithetai sto LayeredPane
+     */
     public void addTileToBoard(Tile tile) {
         ImageIcon icon = loadImage(tile.getImagePath());
         if (icon == null) return;
@@ -371,6 +429,17 @@ public class GameWindow extends JFrame {
         }
     }
 
+
+
+
+
+
+    /**
+     * Voithitiki synarthsh gia na prosthetei to plakidio sto swsto simeio sto layered pane
+     * @param areaButton To koumpi tis perioxis
+     * @param tileLabel To JLabel tou plakidiou
+     * @param index O deiktis tou plakidiou sti lista tis perioxis
+     */
     private void addTileToAreaVisual(JButton areaButton, JLabel tileLabel, int index) {
         // meta apo polla tweaks bash to poy einai ta antistoixa koumpia
         int x, y;
@@ -397,6 +466,14 @@ public class GameWindow extends JFrame {
         layeredPane.repaint();
     }
 
+
+
+    /**
+     * Afairei ena plakidio apo to grafiko tablo
+     * @param tile To antikeimeno Tile (xrisimopoieitai gia na vrethei o typos tou)
+     * @param areaIndex O deiktis tou plakidiou sti lista tis perioxis
+     * @post To antistoixo JLabel afaireitai apo tin othoni kai ginetai repaint
+     */
     public void removeTileFromBoard(Tile tile, int areaIndex) {
         ArrayList<JLabel> targetList = null;
         
@@ -415,6 +492,13 @@ public class GameWindow extends JFrame {
 
     // ebala aytj tj sunarthsh gia to image giati mou ebgaze errors 
     // wste na pairno sosta tin eikona( bohthhse kai to ai edw)
+
+
+    /**
+     * Fortwnei mia eikona apo to sygkekrimeno monopati
+     * @param path To monopati tis eikonas
+     * @return To antikeimeno ImageIcon an brethike, alliws null
+     */
     private ImageIcon loadImage(String path) {
         URL imgURL = getClass().getResource("/" + path);
         if (imgURL != null) {
@@ -437,6 +521,10 @@ public class GameWindow extends JFrame {
 
 
 
+    /**
+     * Paizei mousiki gia ton sygkekrimeno paikti
+     * @param playerNum O arithmos tou paikti (1-4)
+     */
     public void playMusicForPlayer(int playerNum) { 
         try { 
             if (musicClip != null && musicClip.isOpen()) { 
@@ -454,6 +542,13 @@ public class GameWindow extends JFrame {
         } 
     }
 
+
+
+
+
+    /**
+     * Stamataei tin mousiki
+     */
     public void stopMusic() { 
         if (musicClip != null && musicClip.isOpen()) { 
             musicClip.stop(); 
@@ -462,23 +557,93 @@ public class GameWindow extends JFrame {
     }
 
     // getters
+
+    /**
+     * Epistrefei to koumpi gia zografisma plakidiwn
+     * @return To JButton tou koumpiou
+     */
     public JButton getDrawButton() { return drawButton; }
+
+
+    /**
+     * Epistrefei to koumpi gia telos gyro
+     * @return To JButton tou koumpiou
+     */
     public JButton getEndTurnButton() { return endTurnButton; }
+
+
+    /**
+     * Epistrefei ta koumpia twn xarakthron
+     * @return H lista me ta JButtons twn xarakthron
+     */
     public ArrayList<JButton> getCharacterButtons() { return characterButtons; }
+
+
+    /**
+     * Epistrefei to layered pane tou paixnidiou
+     * @return To JLayeredPane tou paixnidiou
+     */
     public JLayeredPane getLayeredPane() { return layeredPane; }
 
 
+
+    /**
+     * Epistrefei to koumpi tis perioxis mosaic
+     * @return To JButton tou koumpiou
+     */
     public JButton getMosaicAreaButton() { return mosaicAreaButton; }
+
+
+
+    /**
+     * Epistrefei to koumpi tis perioxis statue
+     * @return To JButton tou koumpiou
+     */
     public JButton getStatueAreaButton() { return statueAreaButton; }
+
+
+
+    /**
+     * Epistrefei to koumpi tis perioxis amphora
+     * @return To JButton tou koumpiou
+     */
     public JButton getAmphoraAreaButton() { return amphoraAreaButton; }
+
+
+
+
+    /**
+     * Epistrefei to koumpi tis perioxis skeleton
+     * @return To JButton tou koumpiou
+     */
     public JButton getSkeletonAreaButton() { return skeletonAreaButton; }
+
+
 
 
     // gia save/load
 
+
+    /**
+     * Epistrefei to koumpi gia save paixnidiou
+     * @return To JMenuItem tou koumpiou
+     */
     public JMenuItem getSaveItem() { return saveItem; }
+
+
+    /**
+     * Epistrefei to koumpi gia load paixnidiou
+     * @return To JMenuItem tou koumpiou
+     */
     public JMenuItem getLoadItem() { return loadItem; }
 
+
+
+    /**
+     * katharizei ola ta grafika plakidia apo to tablo
+     * xrisimopoieitai kata to Load Game i apo ton klefti sto solo mode
+     * @post Ola ta lists me JLabels (mosaicLabels, statueLabels klp) adeiazoun kai afairountai apo to pane
+     */
     public void resetBoardVisuals() {// oti leei o titlos // kanoume reset ola ta visuals gia na katharizei ta grafika prin fortosei to save
     
         for (JLabel l : mosaicLabels) layeredPane.remove(l);
